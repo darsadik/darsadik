@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DAR SADIK — Gestion Commerciale</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:#f0f2f5;color:#1a1a2e;font-size:14px}
+:root{
+  --blue:#1a5fa8;--blue-light:#e8f0fb;--blue-dark:#0d3d6e;
+  --green:#1a7a4a;--green-light:#e6f5ec;
+  --red:#c0392b;--red-light:#fdecea;
+  --amber:#b8621a;--amber-light:#fdf3e3;
+  --gray:#6b7280;--gray-light:#f9fafb;
+  --border:#e2e8f0;--white:#ffffff;
+  --shadow:0 1px 3px rgba(0,0,0,0.1);
+}
+.topbar{background:var(--blue-dark);color:#fff;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:56px;position:sticky;top:0;z-index:100}
+.topbar-brand{font-size:18px;font-weight:700;letter-spacing:0.5px}
+.topbar-sub{font-size:12px;opacity:0.7;margin-top:2px}
+.topbar-right{font-size:12px;opacity:0.8;text-align:right}
+.nav{background:#fff;border-bottom:1px solid var(--border);display:flex;padding:0 24px;overflow-x:auto;position:sticky;top:56px;z-index:99;box-shadow:var(--shadow)}
+.nav-btn{padding:14px 16px;font-size:13px;background:none;border:none;border-bottom:3px solid transparent;color:var(--gray);cursor:pointer;white-space:nowrap;font-weight:500;transition:all .2s}
+.nav-btn:hover{color:var(--blue);background:#f8faff}
+.nav-btn.active{color:var(--blue);border-bottom-color:var(--blue);background:#f8faff}
+.nav-btn.gs-btn{color:#1a7a4a;border-bottom-color:transparent}
+.nav-btn.gs-btn:hover{color:#0f5c35;background:#e6f5ec}
+.nav-btn.gs-btn.active{color:#0f5c35;border-bottom-color:#1a7a4a;background:#e6f5ec}
+.page{display:none;padding:24px;max-width:1200px;margin:0 auto}
+.page.active{display:block}
+.grid-metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:24px}
+.metric{background:#fff;border-radius:10px;padding:16px;border:1px solid var(--border);box-shadow:var(--shadow)}
+.metric .lbl{font-size:11px;color:var(--gray);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px}
+.metric .val{font-size:24px;font-weight:700;color:#1a1a2e}
+.metric .sub{font-size:11px;color:var(--gray);margin-top:4px}
+.metric.blue .val{color:var(--blue)}
+.metric.green .val{color:var(--green)}
+.metric.red .val{color:var(--red)}
+.metric.amber .val{color:var(--amber)}
+.card{background:#fff;border-radius:10px;padding:20px;border:1px solid var(--border);box-shadow:var(--shadow);margin-bottom:18px}
+.card-title{font-size:14px;font-weight:600;color:#1a1a2e;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between}
+.form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:14px}
+.field{display:flex;flex-direction:column;gap:5px}
+.field label{font-size:12px;font-weight:500;color:#374151}
+.field input,.field select,.field textarea{font-size:13px;padding:8px 11px;border:1px solid var(--border);border-radius:7px;background:#fff;color:#1a1a2e;transition:border .2s;outline:none}
+.field input:focus,.field select:focus{border-color:var(--blue)}
+.calc-box{background:var(--gray-light);border-radius:8px;padding:14px;margin-bottom:14px;display:flex;gap:24px;flex-wrap:wrap}
+.calc-item .cl{font-size:11px;color:var(--gray);margin-bottom:3px}
+.calc-item .cv{font-size:20px;font-weight:700}
+.cv-green{color:var(--green)}
+.cv-blue{color:var(--blue)}
+.cv-red{color:var(--red)}
+.btn-primary{background:var(--blue);color:#fff;border:none;border-radius:7px;padding:9px 20px;font-size:13px;font-weight:600;cursor:pointer;transition:background .2s}
+.btn-primary:hover{background:var(--blue-dark)}
+.btn-success{background:var(--green);color:#fff;border:none;border-radius:7px;padding:9px 20px;font-size:13px;font-weight:600;cursor:pointer}
+.btn-secondary{background:#fff;border:1px solid var(--border);border-radius:7px;padding:8px 18px;font-size:13px;color:#374151;cursor:pointer}
+.btn-secondary:hover{background:var(--gray-light)}
+.btn-danger{background:#fff;border:1px solid #fca5a5;border-radius:6px;padding:4px 10px;font-size:12px;color:var(--red);cursor:pointer}
+.btn-small{padding:5px 12px;font-size:12px}
+.btn-gs{background:#1a7a4a;color:#fff;border:none;border-radius:7px;padding:9px 20px;font-size:13px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.btn-gs:hover{background:#0f5c35}
+.btn-gs-outline{background:#fff;border:1.5px solid #1a7a4a;border-radius:7px;padding:8px 18px;font-size:13px;color:#1a7a4a;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.btn-gs-outline:hover{background:#e6f5ec}
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;padding:9px 12px;font-size:11px;font-weight:600;color:var(--gray);border-bottom:1px solid var(--border);background:var(--gray-light);text-transform:uppercase;letter-spacing:0.04em}
+td{padding:9px 12px;border-bottom:1px solid var(--border);color:#1a1a2e}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#fafbff}
+.tfoot-row td{font-weight:700;background:var(--blue-light);color:var(--blue-dark);border-top:2px solid var(--blue)}
+.badge{display:inline-block;font-size:11px;padding:3px 9px;border-radius:20px;font-weight:600}
+.badge-red{background:var(--red-light);color:var(--red)}
+.badge-amber{background:var(--amber-light);color:var(--amber)}
+.badge-green{background:var(--green-light);color:var(--green)}
+.badge-blue{background:var(--blue-light);color:var(--blue)}
+.alert-box{background:var(--amber-light);border:1px solid #f5c57a;border-radius:8px;padding:12px 16px;font-size:13px;color:var(--amber);margin-bottom:16px}
+.alert-box.danger{background:var(--red-light);border-color:#fca5a5;color:var(--red)}
+.alert-box.success{background:var(--green-light);border-color:#6ee7b7;color:var(--green)}
+.search-bar{display:flex;gap:10px;margin-bottom:16px;align-items:center;flex-wrap:wrap}
+.search-bar input{flex:1;min-width:160px;font-size:13px;padding:8px 12px;border:1px solid var(--border);border-radius:7px;background:#fff;color:#1a1a2e;outline:none}
+.search-bar input:focus{border-color:var(--blue)}
+.add-form-box{background:var(--blue-light);border:1px solid #b5d4f4;border-radius:10px;padding:18px;margin-bottom:16px;display:none}
+.toast{position:fixed;bottom:24px;right:24px;background:#1a1a2e;color:#fff;padding:12px 20px;border-radius:8px;font-size:13px;font-weight:500;z-index:9999;opacity:0;transition:opacity .3s;pointer-events:none;max-width:320px}
+.toast.show{opacity:1}
+.solde-display{background:var(--gray-light);border-radius:8px;padding:12px 16px;display:flex;gap:32px;margin-bottom:14px;flex-wrap:wrap}
+.solde-item .sl{font-size:11px;color:var(--gray);margin-bottom:3px}
+.solde-item .sv{font-size:18px;font-weight:700}
+
+/* ---- GOOGLE SHEETS PAGE ---- */
+.gs-hero{background:linear-gradient(135deg,#0f5c35 0%,#1a7a4a 100%);border-radius:14px;padding:28px;color:#fff;margin-bottom:20px;display:flex;align-items:center;gap:20px}
+.gs-hero-icon{font-size:48px;line-height:1}
+.gs-hero h2{font-size:20px;font-weight:700;margin-bottom:6px}
+.gs-hero p{font-size:13px;opacity:0.85;line-height:1.5}
+.gs-steps{counter-reset:step}
+.gs-step{background:#fff;border:1px solid var(--border);border-radius:10px;padding:18px 20px;margin-bottom:14px;display:flex;gap:16px;align-items:flex-start}
+.gs-step-num{background:var(--blue-dark);color:#fff;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;margin-top:2px}
+.gs-step-body h4{font-size:14px;font-weight:600;margin-bottom:6px;color:#1a1a2e}
+.gs-step-body p{font-size:13px;color:var(--gray);line-height:1.5;margin-bottom:8px}
+.gs-step-body code{background:#f0f2f5;border:1px solid var(--border);border-radius:5px;padding:2px 7px;font-family:monospace;font-size:12px;color:#c0392b;word-break:break-all}
+.gs-action-card{background:#fff;border:1.5px solid #1a7a4a;border-radius:12px;padding:20px;margin-bottom:14px}
+.gs-action-card h3{font-size:15px;font-weight:700;color:#0f5c35;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.gs-action-card p{font-size:13px;color:var(--gray);margin-bottom:14px;line-height:1.5}
+.url-input-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.url-input-row input{flex:1;min-width:240px;font-size:13px;padding:9px 12px;border:1.5px solid var(--border);border-radius:7px;outline:none}
+.url-input-row input:focus{border-color:#1a7a4a}
+.gs-divider{border:none;border-top:1px solid var(--border);margin:20px 0}
+.gs-tag{display:inline-block;background:#e6f5ec;color:#0f5c35;font-size:11px;font-weight:700;padding:2px 8px;border-radius:4px;margin-left:8px}
+.gs-warning{background:#fdf3e3;border:1px solid #f5c57a;border-radius:8px;padding:12px 16px;font-size:12px;color:#b8621a;margin-top:10px}
+.sheet-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.sheet-tab{background:#e8f0fb;color:var(--blue);border:none;border-radius:5px;padding:5px 12px;font-size:12px;font-weight:600;cursor:default}
+.progress-bar{height:6px;background:#e2e8f0;border-radius:3px;overflow:hidden;margin:8px 0}
+.progress-fill{height:100%;background:#1a7a4a;border-radius:3px;transition:width .3s}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div>
+    <div class="topbar-brand">DAR SADIK</div>
+    <div class="topbar-sub">Selouane — Nador &nbsp;|&nbsp; Gestion Commerciale</div>
+  </div>
+  <div class="topbar-right" id="top-date"></div>
+</div>
+
+<div class="nav">
+  <button class="nav-btn active" onclick="goTo('dashboard',this)">&#9632; Accueil</button>
+  <button class="nav-btn" onclick="goTo('vente',this)">+ Vente briques</button>
+  <button class="nav-btn" onclick="goTo('gasoil',this)">+ Gasoil</button>
+  <button class="nav-btn" onclick="goTo('paiement',this)">+ Paiement</button>
+  <button class="nav-btn" onclick="goTo('clients',this)">Clients</button>
+  <button class="nav-btn" onclick="goTo('camions',this)">Camions</button>
+  <button class="nav-btn" onclick="goTo('rapport',this)">Rapport</button>
+  <button class="nav-btn gs-btn" onclick="goTo('googlesheets',this)">&#9654; Google Sheets</button>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboard" class="page active">
+  <div id="dash-alerts"></div>
+  <div class="grid-metrics">
+    <div class="metric red"><div class="lbl">Créances totales</div><div class="val" id="m-creances">—</div><div class="sub">DHS dus par clients</div></div>
+    <div class="metric blue"><div class="lbl">Ventes (saisies)</div><div class="val" id="m-ventes">—</div><div class="sub">DHS enregistrés</div></div>
+    <div class="metric amber"><div class="lbl">Gasoil (saisi)</div><div class="val" id="m-gasoil">—</div><div class="sub">DHS consommés</div></div>
+    <div class="metric green"><div class="lbl">Marge brutes</div><div class="val" id="m-marge">—</div><div class="sub">DHS bénéfice</div></div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px">
+    <div class="card">
+      <div class="card-title">Clients — soldes urgents</div>
+      <div class="tbl-wrap"><table id="tbl-dash-clients"><thead><tr><th>Client</th><th>Dépôt</th><th>Solde DHS</th><th>Statut</th></tr></thead><tbody></tbody></table></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Dernières opérations</div>
+      <div class="tbl-wrap"><table id="tbl-dash-ops"><thead><tr><th>Date</th><th>Type</th><th>Montant</th><th>Détail</th></tr></thead><tbody></tbody></table></div>
+    </div>
+  </div>
+</div>
+
+<!-- VENTE -->
+<div id="vente" class="page">
+  <div class="card">
+    <div class="card-title">Nouvelle vente de briques</div>
+    <div class="form-grid">
+      <div class="field"><label>Date</label><input type="date" id="v-date"></div>
+      <div class="field"><label>Client</label><select id="v-client"></select></div>
+      <div class="field"><label>Camion</label><select id="v-camion"></select></div>
+      <div class="field"><label>Fournisseur</label><select id="v-fourn"><option>NOVA BRIQ SARL</option><option>DURA BRIQ</option><option>SALIMO BRIQ</option></select></div>
+    </div>
+    <div class="form-grid">
+      <div class="field"><label>Type brique</label><select id="v-type"><option>B12</option><option>B10</option><option>B7GF1</option><option>B7GF2</option><option>B05/03</option><option>B06/07</option></select></div>
+      <div class="field"><label>Quantité (unités)</label><input type="number" id="v-qte" placeholder="ex: 6000" oninput="calcVente()"></div>
+      <div class="field"><label>Prix vente / unité (DHS)</label><input type="number" id="v-pv" placeholder="ex: 1.85" step="0.01" oninput="calcVente()"></div>
+      <div class="field"><label>Prix achat / unité (DHS)</label><input type="number" id="v-pa" placeholder="ex: 1.30" step="0.01" oninput="calcVente()"></div>
+    </div>
+    <div class="form-grid">
+      <div class="field"><label>BON N°</label><input type="text" id="v-bon" placeholder="ex: 2849"></div>
+      <div class="field"><label>Note (optionnel)</label><input type="text" id="v-note" placeholder="ex: transport payé"></div>
+    </div>
+    <div class="calc-box">
+      <div class="calc-item"><div class="cl">Total vente</div><div class="cv cv-blue" id="cv-vente">0 DHS</div></div>
+      <div class="calc-item"><div class="cl">Total achat</div><div class="cv" id="cv-achat">0 DHS</div></div>
+      <div class="calc-item"><div class="cl">Marge</div><div class="cv cv-green" id="cv-marge">0 DHS</div></div>
+    </div>
+    <div style="display:flex;gap:10px">
+      <button class="btn-primary" onclick="saveVente()">&#10003; Enregistrer</button>
+      <button class="btn-secondary" onclick="clearVente()">Annuler</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">
+      Historique des ventes <span id="ventes-count" style="font-size:12px;color:var(--gray);font-weight:400"></span>
+      <button class="btn-gs-outline btn-small" onclick="exportSheet('ventes')">&#8595; Exporter vers Sheets</button>
+    </div>
+    <div class="search-bar">
+      <input type="text" id="v-search" placeholder="Rechercher par client, camion, type..." oninput="renderVentes()">
+      <select id="v-filter-fourn" onchange="renderVentes()" style="padding:8px 10px;border:1px solid var(--border);border-radius:7px;font-size:13px">
+        <option value="">Tous fournisseurs</option>
+        <option>NOVA BRIQ SARL</option><option>DURA BRIQ</option><option>SALIMO BRIQ</option>
+      </select>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Date</th><th>Client</th><th>Camion</th><th>Fournisseur</th><th>Type</th><th>Quantité</th><th>Vente DHS</th><th>Achat DHS</th><th>Marge DHS</th><th>BON</th><th></th></tr></thead>
+        <tbody id="tbody-ventes"></tbody>
+        <tfoot><tr class="tfoot-row"><td colspan="5">TOTAL</td><td id="sum-v-qte">0</td><td id="sum-v-vente">0</td><td id="sum-v-achat">0</td><td id="sum-v-marge">0</td><td colspan="2"></td></tr></tfoot>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- GASOIL -->
+<div id="gasoil" class="page">
+  <div class="card">
+    <div class="card-title">Saisie plein gasoil</div>
+    <div class="form-grid">
+      <div class="field"><label>Date</label><input type="date" id="g-date"></div>
+      <div class="field"><label>Camion</label><select id="g-camion"></select></div>
+      <div class="field"><label>Station</label><select id="g-station"><option>HMIDA ZAIO — Station Petrom</option><option>Autre station</option></select></div>
+      <div class="field"><label>BON N°</label><input type="text" id="g-bon" placeholder="ex: 14650"></div>
+    </div>
+    <div class="form-grid">
+      <div class="field"><label>Quantité (litres)</label><input type="number" id="g-qte" placeholder="ex: 300" oninput="calcGasoil()"></div>
+      <div class="field"><label>Prix / litre (DHS)</label><input type="number" id="g-pu" placeholder="ex: 12.40" step="0.01" value="12.40" oninput="calcGasoil()"></div>
+    </div>
+    <div class="calc-box">
+      <div class="calc-item"><div class="cl">Montant total</div><div class="cv cv-blue" id="cg-total">0.00 DHS</div></div>
+    </div>
+    <button class="btn-primary" onclick="saveGasoil()">&#10003; Enregistrer le plein</button>
+  </div>
+  <div class="card">
+    <div class="card-title">
+      Historique gasoil
+      <button class="btn-gs-outline btn-small" onclick="exportSheet('gasoil')">&#8595; Exporter vers Sheets</button>
+    </div>
+    <div class="search-bar">
+      <input type="text" id="g-search" placeholder="Filtrer par camion ou station..." oninput="renderGasoil()">
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Date</th><th>Camion</th><th>Station</th><th>Litres</th><th>Prix/L</th><th>Total DHS</th><th>BON</th><th></th></tr></thead>
+        <tbody id="tbody-gasoil"></tbody>
+        <tfoot><tr class="tfoot-row"><td colspan="3">TOTAL</td><td id="sum-g-litres">0</td><td></td><td id="sum-g-dhs">0</td><td colspan="2"></td></tr></tfoot>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- PAIEMENT -->
+<div id="paiement" class="page">
+  <div class="card">
+    <div class="card-title">Enregistrer un paiement client</div>
+    <div class="form-grid">
+      <div class="field"><label>Date</label><input type="date" id="p-date"></div>
+      <div class="field"><label>Client</label><select id="p-client" onchange="updateSoldeDisplay()"></select></div>
+      <div class="field"><label>Mode de paiement</label><select id="p-mode"><option>Espèce</option><option>Chèque</option><option>Virement</option><option>Versement chauffeur</option></select></div>
+      <div class="field"><label>Montant (DHS)</label><input type="number" id="p-montant" placeholder="ex: 50000" oninput="updateSoldeDisplay()"></div>
+    </div>
+    <div class="field" style="margin-bottom:14px"><label>Référence / Note</label><input type="text" id="p-note" placeholder="ex: Chèque N° 123456, Banque CIH..."></div>
+    <div class="solde-display">
+      <div class="solde-item"><div class="sl">Solde actuel du client</div><div class="sv cv-red" id="p-solde-avant">—</div></div>
+      <div class="solde-item" style="font-size:24px;color:#ccc;align-self:center">→</div>
+      <div class="solde-item"><div class="sl">Solde après paiement</div><div class="sv cv-green" id="p-solde-apres">—</div></div>
+    </div>
+    <button class="btn-success" onclick="savePaiement()">&#10003; Enregistrer le paiement</button>
+  </div>
+  <div class="card">
+    <div class="card-title">
+      Historique des paiements
+      <button class="btn-gs-outline btn-small" onclick="exportSheet('paiements')">&#8595; Exporter vers Sheets</button>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Date</th><th>Client</th><th>Mode</th><th>Montant DHS</th><th>Note</th><th></th></tr></thead>
+        <tbody id="tbody-paiements"></tbody>
+        <tfoot><tr class="tfoot-row"><td colspan="3">TOTAL REÇU</td><td id="sum-p-total">0</td><td colspan="2"></td></tr></tfoot>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- CLIENTS -->
+<div id="clients" class="page">
+  <div class="search-bar">
+    <input type="text" id="cl-search" placeholder="Rechercher un client..." oninput="renderClients()">
+    <button class="btn-primary" onclick="toggleAddClient()">+ Nouveau client</button>
+    <button class="btn-gs-outline btn-small" onclick="exportSheet('clients')">&#8595; Exporter vers Sheets</button>
+  </div>
+  <div class="add-form-box" id="add-client-box">
+    <div style="font-size:13px;font-weight:600;margin-bottom:12px;color:var(--blue-dark)">Nouveau client</div>
+    <div class="form-grid">
+      <div class="field"><label>Nom complet</label><input type="text" id="nc-nom" placeholder="Nom du client"></div>
+      <div class="field"><label>Dépôt / Zone</label><select id="nc-depot"><option>EL HAJEB</option><option>BERKANE</option><option>AHFIR</option><option>TAOUIMA</option><option>ZAIO</option><option>AUTRE</option></select></div>
+      <div class="field"><label>Téléphone</label><input type="text" id="nc-tel" placeholder="06 ..."></div>
+      <div class="field"><label>Solde initial (DHS)</label><input type="number" id="nc-solde" value="0"></div>
+    </div>
+    <div style="display:flex;gap:10px">
+      <button class="btn-primary" onclick="addClient()">Enregistrer</button>
+      <button class="btn-secondary" onclick="toggleAddClient()">Annuler</button>
+    </div>
+  </div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Nom client</th><th>Dépôt</th><th>Téléphone</th><th>Solde DHS</th><th>Statut</th><th>Actions</th></tr></thead>
+      <tbody id="tbody-clients"></tbody>
+      <tfoot><tr class="tfoot-row"><td colspan="3">TOTAL CRÉANCES</td><td id="sum-cl-solde">0</td><td colspan="2"></td></tr></tfoot>
+    </table>
+  </div>
+</div>
+
+<!-- CAMIONS -->
+<div id="camions" class="page">
+  <div class="search-bar">
+    <input type="text" id="tr-search" placeholder="Rechercher un camion..." oninput="renderTrucks()">
+    <button class="btn-primary" onclick="toggleAddTruck()">+ Nouveau camion</button>
+    <button class="btn-gs-outline btn-small" onclick="exportSheet('camions')">&#8595; Exporter vers Sheets</button>
+  </div>
+  <div class="add-form-box" id="add-truck-box">
+    <div style="font-size:13px;font-weight:600;margin-bottom:12px;color:var(--blue-dark)">Nouveau camion</div>
+    <div class="form-grid">
+      <div class="field"><label>Immatriculation</label><input type="text" id="nt-plaque" placeholder="ex: 20181-B-50"></div>
+      <div class="field"><label>Chauffeur</label><input type="text" id="nt-chauffeur" placeholder="Nom du chauffeur"></div>
+      <div class="field"><label>Dépôt</label><select id="nt-depot"><option>EL HAJEB</option><option>BERKANE</option><option>AHFIR</option><option>TAOUIMA</option></select></div>
+    </div>
+    <div style="display:flex;gap:10px">
+      <button class="btn-primary" onclick="addTruck()">Enregistrer</button>
+      <button class="btn-secondary" onclick="toggleAddTruck()">Annuler</button>
+    </div>
+  </div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Immatriculation</th><th>Chauffeur</th><th>Dépôt</th><th>Total gasoil DHS</th><th>Nbre pleins</th><th>Total litres</th><th>Actions</th></tr></thead>
+      <tbody id="tbody-trucks"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- RAPPORT -->
+<div id="rapport" class="page">
+  <div class="card">
+    <div class="card-title">Paramètres du rapport</div>
+    <div class="form-grid">
+      <div class="field"><label>Du</label><input type="date" id="r-from"></div>
+      <div class="field"><label>Au</label><input type="date" id="r-to"></div>
+      <div class="field"><label>Client (optionnel)</label><select id="r-client"><option value="">Tous les clients</option></select></div>
+    </div>
+    <div style="display:flex;gap:10px">
+      <button class="btn-primary" onclick="buildReport()">&#128196; Générer le rapport</button>
+      <button class="btn-secondary" onclick="printReport()">&#128438; Imprimer</button>
+    </div>
+  </div>
+  <div id="report-output"></div>
+</div>
+
+<!-- ===================== GOOGLE SHEETS PAGE ===================== -->
+<div id="googlesheets" class="page">
+
+  <div class="gs-hero">
+    <div class="gs-hero-icon">📊</div>
+    <div>
+      <h2>Connexion Google Sheets</h2>
+      <p>Exportez vos données vers Google Sheets pour les sauvegarder dans le cloud, y accéder depuis votre téléphone, ou les partager avec votre comptable.</p>
+    </div>
+  </div>
+
+  <!-- SETUP GUIDE -->
+  <div class="card">
+    <div class="card-title">
+      📋 Guide de configuration — À faire une seule fois
+      <span class="gs-tag">DÉBUTANT</span>
+    </div>
+
+    <div class="gs-step">
+      <div class="gs-step-num">1</div>
+      <div class="gs-step-body">
+        <h4>Créer votre Google Sheet</h4>
+        <p>Allez sur <strong>sheets.google.com</strong> → Créer un nouveau fichier → Nommez-le <strong>"DAR SADIK"</strong>.<br>Créez 5 onglets (feuilles) avec ces noms exacts :</p>
+        <div class="sheet-tabs">
+          <span class="sheet-tab">Ventes</span>
+          <span class="sheet-tab">Gasoil</span>
+          <span class="sheet-tab">Paiements</span>
+          <span class="sheet-tab">Clients</span>
+          <span class="sheet-tab">Camions</span>
+        </div>
+        <p style="font-size:12px;color:var(--gray)">Pour créer un onglet : cliquez sur le "+" en bas à gauche de la page Sheets.</p>
+      </div>
+    </div>
+
+    <div class="gs-step">
+      <div class="gs-step-num">2</div>
+      <div class="gs-step-body">
+        <h4>Ouvrir Apps Script</h4>
+        <p>Dans votre Google Sheet → Menu <strong>Extensions</strong> → <strong>Apps Script</strong>. Une nouvelle page s'ouvre.</p>
+      </div>
+    </div>
+
+    <div class="gs-step">
+      <div class="gs-step-num">3</div>
+      <div class="gs-step-body">
+        <h4>Coller le code Apps Script</h4>
+        <p>Supprimez tout le texte dans l'éditeur, puis copiez-collez ce code :</p>
+        <div style="background:#1e1e2e;border-radius:8px;padding:16px;margin:8px 0;overflow-x:auto">
+          <pre id="apps-script-code" style="color:#cdd6f4;font-size:11px;line-height:1.6;font-family:monospace;white-space:pre-wrap">function doPost(e) {
+  try {
+    var data = JSON.parse(e.postData.contents);
+    var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(data.sheet);
+    if (!sheet) return ContentService.createTextOutput(JSON.stringify({error:'Sheet not found'})).setMimeType(ContentService.MimeType.JSON);
+    
+    if (data.action === 'export') {
+      sheet.clearContents();
+      if (data.rows && data.rows.length > 0) {
+        sheet.getRange(1, 1, data.rows.length, data.rows[0].length).setValues(data.rows);
+        sheet.getRange(1, 1, 1, data.rows[0].length).setFontWeight('bold').setBackground('#0d3d6e').setFontColor('#ffffff');
+      }
+      return ContentService.createTextOutput(JSON.stringify({ok:true, written: data.rows ? data.rows.length-1 : 0})).setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    if (data.action === 'import') {
+      var values = sheet.getDataRange().getValues();
+      return ContentService.createTextOutput(JSON.stringify({ok:true, rows: values})).setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    return ContentService.createTextOutput(JSON.stringify({error:'Unknown action'})).setMimeType(ContentService.MimeType.JSON);
+  } catch(err) {
+    return ContentService.createTextOutput(JSON.stringify({error: err.message})).setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+function doGet(e) {
+  return ContentService.createTextOutput('DAR SADIK API OK').setMimeType(ContentService.MimeType.TEXT);
+}</pre>
+        </div>
+        <button class="btn-secondary btn-small" onclick="copyScript()">📋 Copier le code</button>
+      </div>
+    </div>
+
+    <div class="gs-step">
+      <div class="gs-step-num">4</div>
+      <div class="gs-step-body">
+        <h4>Déployer comme application web</h4>
+        <p>Dans Apps Script → bouton <strong>Déployer</strong> → <strong>Nouveau déploiement</strong> → Type : <strong>Application Web</strong><br>
+        Paramètres importants :<br>
+        &bull; <strong>Exécuter en tant que :</strong> Moi<br>
+        &bull; <strong>Qui a accès :</strong> Tout le monde<br>
+        → Cliquez <strong>Déployer</strong> → Autorisez l'accès → Copiez l'<strong>URL de déploiement</strong></p>
+        <div class="gs-warning">⚠️ L'URL ressemble à : <code>https://script.google.com/macros/s/ABC.../exec</code></div>
+      </div>
+    </div>
+
+    <div class="gs-step">
+      <div class="gs-step-num">5</div>
+      <div class="gs-step-body">
+        <h4>Coller l'URL ici</h4>
+        <p>Entrez votre URL de déploiement ci-dessous pour connecter l'application :</p>
+        <div class="url-input-row">
+          <input type="text" id="gs-url" placeholder="https://script.google.com/macros/s/.../exec" oninput="saveGsUrl()">
+          <button class="btn-gs" onclick="testConnection()">🔗 Tester la connexion</button>
+        </div>
+        <div id="gs-status" style="margin-top:8px;font-size:12px;color:var(--gray)"></div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="gs-divider">
+
+  <!-- EXPORT SECTION -->
+  <div class="gs-action-card">
+    <h3>⬆️ Exporter vers Google Sheets <span class="gs-tag">SAUVEGARDE</span></h3>
+    <p>Envoie toutes vos données de l'application vers Google Sheets. Chaque export écrase les données précédentes dans Sheets (vos données locales restent intactes).</p>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px">
+      <button class="btn-gs" onclick="exportSheet('ventes')">↑ Ventes</button>
+      <button class="btn-gs" onclick="exportSheet('gasoil')">↑ Gasoil</button>
+      <button class="btn-gs" onclick="exportSheet('paiements')">↑ Paiements</button>
+      <button class="btn-gs" onclick="exportSheet('clients')">↑ Clients</button>
+      <button class="btn-gs" onclick="exportSheet('camions')">↑ Camions</button>
+    </div>
+    <button class="btn-gs" style="background:#0d3d6e;font-size:14px;padding:11px 24px" onclick="exportAll()">
+      ⬆️ TOUT EXPORTER (5 feuilles)
+    </button>
+    <div id="export-progress" style="margin-top:12px;display:none">
+      <div style="font-size:12px;color:var(--gray);margin-bottom:4px" id="export-progress-text">Export en cours...</div>
+      <div class="progress-bar"><div class="progress-fill" id="export-progress-fill" style="width:0%"></div></div>
+    </div>
+  </div>
+
+  <!-- IMPORT SECTION -->
+  <div class="gs-action-card">
+    <h3>⬇️ Importer depuis Google Sheets <span class="gs-tag" style="background:#fdf3e3;color:#b8621a">RESTAURER</span></h3>
+    <p>Récupère les données depuis Google Sheets et les charge dans l'application. ⚠️ <strong>Attention :</strong> ceci remplace vos données locales actuelles. Faites d'abord un export si nécessaire.</p>
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <button class="btn-gs-outline" onclick="importSheet('ventes')">↓ Importer Ventes</button>
+      <button class="btn-gs-outline" onclick="importSheet('gasoil')">↓ Importer Gasoil</button>
+      <button class="btn-gs-outline" onclick="importSheet('paiements')">↓ Importer Paiements</button>
+      <button class="btn-gs-outline" onclick="importSheet('clients')">↓ Importer Clients</button>
+      <button class="btn-gs-outline" onclick="importSheet('camions')">↓ Importer Camions</button>
+    </div>
+    <div style="margin-top:12px">
+      <button class="btn-gs-outline" style="border-color:#b8621a;color:#b8621a;font-size:14px;padding:11px 24px" onclick="importAll()">
+        ⬇️ TOUT IMPORTER (5 feuilles)
+      </button>
+    </div>
+    <div id="import-progress" style="margin-top:12px;display:none">
+      <div style="font-size:12px;color:var(--gray);margin-bottom:4px" id="import-progress-text">Import en cours...</div>
+      <div class="progress-bar"><div class="progress-fill" id="import-progress-fill" style="width:0%;background:#b8621a"></div></div>
+    </div>
+  </div>
+
+  <!-- BACKUP LOCAL -->
+  <div class="card">
+    <div class="card-title">💾 Sauvegarde locale (sans internet)</div>
+    <p style="font-size:13px;color:var(--gray);margin-bottom:14px">Si vous n'avez pas internet, vous pouvez sauvegarder et restaurer vos données sous forme de fichier JSON sur votre PC.</p>
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <button class="btn-secondary" onclick="backupLocal()">&#128229; Télécharger sauvegarde (.json)</button>
+      <label class="btn-secondary" style="cursor:pointer">
+        &#128228; Restaurer depuis fichier
+        <input type="file" accept=".json" onchange="restoreLocal(event)" style="display:none">
+      </label>
+    </div>
+  </div>
+
+  <div id="gs-log" style="margin-top:16px"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ---- STATE ----
+const defaultState = {
+  clients:[
+    {id:1,nom:'Ahmed Beramdan El Rafei',depot:'BERKANE',tel:'',solde:610549},
+    {id:2,nom:'Soufian El Hajeb',depot:'EL HAJEB',tel:'',solde:123880},
+    {id:3,nom:'Tahiri Berkane',depot:'BERKANE',tel:'',solde:111175},
+    {id:4,nom:'Nouredine El Hajeb',depot:'EL HAJEB',tel:'',solde:104440},
+    {id:5,nom:'Abdeljalil',depot:'EL HAJEB',tel:'',solde:40000},
+    {id:6,nom:'Laghrisi El Hajeb',depot:'EL HAJEB',tel:'',solde:36600},
+    {id:7,nom:'El Mazrouai',depot:'BERKANE',tel:'',solde:35850},
+    {id:8,nom:'Tarek El Hajeb',depot:'EL HAJEB',tel:'',solde:28700},
+    {id:9,nom:'Youssef Haqqoun',depot:'EL HAJEB',tel:'',solde:28450},
+    {id:10,nom:'Hamid Khouti',depot:'EL HAJEB',tel:'',solde:25509},
+    {id:11,nom:'Abdenbi El Hajeb',depot:'EL HAJEB',tel:'',solde:0},
+    {id:12,nom:'Mohamed Elaamrani',depot:'EL HAJEB',tel:'',solde:10950},
+    {id:13,nom:'Abdelhamid Ahfir',depot:'AHFIR',tel:'',solde:0},
+    {id:14,nom:'Abdelhafid Berkane',depot:'BERKANE',tel:'',solde:0},
+    {id:15,nom:'Hicham Berkane',depot:'BERKANE',tel:'',solde:0},
+    {id:16,nom:'Said Taouima',depot:'TAOUIMA',tel:'',solde:0},
+  ],
+  trucks:[
+    {id:1,plaque:'20181-B-50',chauffeur:'',depot:'EL HAJEB',gasoil_dhs:553255,pleins:126,litres:50280},
+    {id:2,plaque:'23400-B-50',chauffeur:'',depot:'EL HAJEB',gasoil_dhs:407954,pleins:186,litres:37082},
+    {id:3,plaque:'25188-B-50',chauffeur:'',depot:'EL HAJEB',gasoil_dhs:371728,pleins:86,litres:33398},
+    {id:4,plaque:'21410-B-50',chauffeur:'',depot:'EL HAJEB',gasoil_dhs:355887,pleins:147,litres:32503},
+    {id:5,plaque:'26892-B-50',chauffeur:'',depot:'EL HAJEB',gasoil_dhs:313276,pleins:103,litres:28506},
+    {id:6,plaque:'19231-B-26',chauffeur:'',depot:'EL HAJEB',gasoil_dhs:311543,pleins:130,litres:27796},
+    {id:7,plaque:'14489-B-26',chauffeur:'',depot:'EL HAJEB',gasoil_dhs:293689,pleins:93,litres:26423},
+    {id:8,plaque:'53838-A-50',chauffeur:'',depot:'BERKANE',gasoil_dhs:257116,pleins:143,litres:23001},
+    {id:9,plaque:'22504-B-50',chauffeur:'',depot:'EL HAJEB',gasoil_dhs:231475,pleins:163,litres:20657},
+    {id:10,plaque:'19940-B-50',chauffeur:'',depot:'EL HAJEB',gasoil_dhs:0,pleins:0,litres:0},
+    {id:11,plaque:'20562-B-50',chauffeur:'',depot:'EL HAJEB',gasoil_dhs:0,pleins:0,litres:0},
+    {id:12,plaque:'13204-B-40',chauffeur:'',depot:'EL HAJEB',gasoil_dhs:0,pleins:0,litres:0},
+  ],
+  ventes:[],gasoil:[],paiements:[],ops:[],
+  nextClientId:17,nextTruckId:13
+};
+
+let S = JSON.parse(localStorage.getItem('darSadik') || 'null') || JSON.parse(JSON.stringify(defaultState));
+let gsUrl = localStorage.getItem('darSadikGsUrl') || '';
+function save(){localStorage.setItem('darSadik',JSON.stringify(S));}
+function saveGsUrl(){
+  gsUrl = document.getElementById('gs-url').value.trim();
+  localStorage.setItem('darSadikGsUrl',gsUrl);
+}
+
+// ---- UTILS ----
+const fmt = n => Math.round(n||0).toLocaleString('fr-MA');
+const fmtD = n => parseFloat(n||0).toFixed(2);
+const today = () => new Date().toISOString().split('T')[0];
+function toast(msg,type='ok'){
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.style.background=type==='ok'?'#1a1a2e':type==='green'?'#1a7a4a':'#c0392b';
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3000);
+}
+function logGs(msg,type='ok'){
+  const box=document.getElementById('gs-log');
+  if(!box)return;
+  const color=type==='ok'?'var(--green)':type==='err'?'var(--red)':'var(--amber)';
+  box.innerHTML=`<div class="alert-box ${type==='ok'?'success':type==='err'?'danger':''}" style="margin-bottom:8px">${msg}</div>`+box.innerHTML;
+}
+
+// ---- INIT ----
+document.getElementById('top-date').innerHTML = new Date().toLocaleDateString('fr-MA',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+function initDates(){
+  document.getElementById('v-date').value=today();
+  document.getElementById('g-date').value=today();
+  document.getElementById('p-date').value=today();
+  const now=new Date();
+  document.getElementById('r-from').value=new Date(now.getFullYear(),now.getMonth(),1).toISOString().split('T')[0];
+  document.getElementById('r-to').value=today();
+}
+function initGsUrl(){
+  if(gsUrl) document.getElementById('gs-url').value=gsUrl;
+}
+
+function populateSelects(){
+  ['v-client','p-client','r-client'].forEach(sid=>{
+    const el=document.getElementById(sid); if(!el)return;
+    const cur=el.value;
+    el.innerHTML=(sid==='r-client'?'<option value="">Tous les clients</option>':'')+S.clients.map(c=>`<option value="${c.id}">${c.nom}</option>`).join('');
+    if(cur)el.value=cur;
+  });
+  ['v-camion','g-camion'].forEach(sid=>{
+    const el=document.getElementById(sid); if(!el)return;
+    const cur=el.value;
+    el.innerHTML=S.trucks.map(t=>`<option value="${t.id}">${t.plaque}${t.chauffeur?' — '+t.chauffeur:''}</option>`).join('');
+    if(cur)el.value=cur;
+  });
+}
+
+// ---- NAVIGATION ----
+function goTo(id,btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+  populateSelects();
+  if(id==='dashboard') renderDashboard();
+  if(id==='clients') renderClients();
+  if(id==='camions') renderTrucks();
+  if(id==='vente') renderVentes();
+  if(id==='gasoil') renderGasoil();
+  if(id==='paiement'){renderPaiements();updateSoldeDisplay();}
+  if(id==='googlesheets') initGsUrl();
+}
+
+// ---- DASHBOARD ----
+function renderDashboard(){
+  const totalCr=S.clients.reduce((s,c)=>s+(c.solde||0),0);
+  const totalV=S.ventes.reduce((s,v)=>s+v.vente,0);
+  const totalG=S.gasoil.reduce((s,g)=>s+g.total,0);
+  const totalM=S.ventes.reduce((s,v)=>s+v.marge,0);
+  document.getElementById('m-creances').textContent=fmt(totalCr);
+  document.getElementById('m-ventes').textContent=fmt(totalV);
+  document.getElementById('m-gasoil').textContent=fmt(totalG);
+  document.getElementById('m-marge').textContent=fmt(totalM);
+  const urgent=S.clients.filter(c=>(c.solde||0)>=100000);
+  const az=document.getElementById('dash-alerts');
+  az.innerHTML=urgent.length?`<div class="alert-box danger">&#9888; ${urgent.length} client(s) avec solde &ge; 100 000 DHS : <strong>${urgent.map(c=>c.nom).join(', ')}</strong></div>`:'';
+  const tb=document.querySelector('#tbl-dash-clients tbody');
+  tb.innerHTML=S.clients.filter(c=>(c.solde||0)>5000).sort((a,b)=>(b.solde||0)-(a.solde||0)).slice(0,8).map(c=>{
+    const s=c.solde||0;
+    const b=s>=100000?'<span class="badge badge-red">Urgent</span>':s>=30000?'<span class="badge badge-amber">Attention</span>':'<span class="badge badge-blue">En cours</span>';
+    return `<tr><td><strong>${c.nom}</strong></td><td>${c.depot}</td><td><strong>${fmt(s)}</strong></td><td>${b}</td></tr>`;
+  }).join('');
+  const to=document.querySelector('#tbl-dash-ops tbody');
+  to.innerHTML=(S.ops||[]).slice(0,10).map(o=>{
+    const color=o.montant<0?'color:var(--green)':'';
+    return `<tr><td>${o.date}</td><td>${o.type}</td><td style="${color};font-weight:600">${o.montant<0?'- ':'+ '}${fmt(Math.abs(o.montant))}</td><td style="font-size:12px;color:var(--gray)">${o.detail}</td></tr>`;
+  }).join('')||'<tr><td colspan="4" style="text-align:center;color:var(--gray);padding:20px">Aucune opération enregistrée</td></tr>';
+}
+function addOp(date,type,detail,montant){
+  if(!S.ops)S.ops=[];
+  S.ops.unshift({date,type,detail,montant});
+  if(S.ops.length>100)S.ops.pop();
+}
+
+// ---- VENTE ----
+function calcVente(){
+  const q=parseFloat(document.getElementById('v-qte').value)||0;
+  const pv=parseFloat(document.getElementById('v-pv').value)||0;
+  const pa=parseFloat(document.getElementById('v-pa').value)||0;
+  document.getElementById('cv-vente').textContent=fmt(q*pv)+' DHS';
+  document.getElementById('cv-achat').textContent=fmt(q*pa)+' DHS';
+  document.getElementById('cv-marge').textContent=fmt(q*(pv-pa))+' DHS';
+}
+function saveVente(){
+  const q=parseFloat(document.getElementById('v-qte').value)||0;
+  const pv=parseFloat(document.getElementById('v-pv').value)||0;
+  const pa=parseFloat(document.getElementById('v-pa').value)||0;
+  if(!q||!pv){toast('Quantité et prix vente obligatoires','err');return;}
+  const cid=parseInt(document.getElementById('v-client').value);
+  const tid=parseInt(document.getElementById('v-camion').value);
+  const c=S.clients.find(x=>x.id===cid);
+  const t=S.trucks.find(x=>x.id===tid);
+  const rec={id:Date.now(),date:document.getElementById('v-date').value,client:c?c.nom:'?',clientId:cid,camion:t?t.plaque:'?',camionId:tid,fourn:document.getElementById('v-fourn').value,type:document.getElementById('v-type').value,qte:q,pv,pa,vente:Math.round(q*pv*100)/100,achat:Math.round(q*pa*100)/100,marge:Math.round(q*(pv-pa)*100)/100,bon:document.getElementById('v-bon').value,note:document.getElementById('v-note').value};
+  S.ventes.unshift(rec);
+  if(c)c.solde=(c.solde||0)+rec.vente;
+  addOp(rec.date,'Vente',rec.type+' × '+fmt(q)+' — '+rec.client,rec.vente);
+  save();renderVentes();toast('Vente enregistrée — '+fmt(rec.vente)+' DHS');clearVente();
+}
+function clearVente(){
+  ['v-qte','v-pv','v-pa','v-bon','v-note'].forEach(id=>document.getElementById(id).value='');
+  calcVente();
+}
+function deleteVente(id){
+  const i=S.ventes.findIndex(v=>v.id===id);
+  if(i<0)return;
+  const v=S.ventes[i];
+  const c=S.clients.find(x=>x.id===v.clientId);
+  if(c&&confirm('Supprimer cette vente ?')){c.solde=Math.max(0,(c.solde||0)-v.vente);S.ventes.splice(i,1);save();renderVentes();toast('Vente supprimée');}
+}
+function renderVentes(){
+  const q=document.getElementById('v-search').value.toLowerCase();
+  const ff=document.getElementById('v-filter-fourn').value;
+  const rows=S.ventes.filter(v=>{if(ff&&v.fourn!==ff)return false;return !q||(v.client+v.camion+v.type+v.fourn).toLowerCase().includes(q);});
+  let tq=0,tv=0,ta=0,tm=0;
+  document.getElementById('tbody-ventes').innerHTML=rows.map(r=>{
+    tq+=r.qte;tv+=r.vente;ta+=r.achat;tm+=r.marge;
+    const mc=r.marge>0?'color:var(--green);font-weight:600':'color:var(--red)';
+    return `<tr><td>${r.date}</td><td>${r.client}</td><td>${r.camion}</td><td><span class="badge badge-blue">${r.fourn.replace(' SARL','').replace(' BRIQ','')}</span></td><td>${r.type}</td><td>${fmt(r.qte)}</td><td style="font-weight:600">${fmt(r.vente)}</td><td>${fmt(r.achat)}</td><td style="${mc}">${fmt(r.marge)}</td><td style="font-size:12px;color:var(--gray)">${r.bon||'—'}</td><td><button class="btn-danger btn-small" onclick="deleteVente(${r.id})">✕</button></td></tr>`;
+  }).join('')||'<tr><td colspan="11" style="text-align:center;color:var(--gray);padding:20px">Aucune vente enregistrée</td></tr>';
+  document.getElementById('sum-v-qte').textContent=fmt(tq);
+  document.getElementById('sum-v-vente').textContent=fmt(tv);
+  document.getElementById('sum-v-achat').textContent=fmt(ta);
+  document.getElementById('sum-v-marge').textContent=fmt(tm);
+  document.getElementById('ventes-count').textContent='('+rows.length+' entrée'+(rows.length>1?'s':'')+')';
+}
+
+// ---- GASOIL ----
+function calcGasoil(){
+  const q=parseFloat(document.getElementById('g-qte').value)||0;
+  const pu=parseFloat(document.getElementById('g-pu').value)||0;
+  document.getElementById('cg-total').textContent=fmtD(q*pu)+' DHS';
+}
+function saveGasoil(){
+  const q=parseFloat(document.getElementById('g-qte').value)||0;
+  const pu=parseFloat(document.getElementById('g-pu').value)||0;
+  if(!q||!pu){toast('Litres et prix obligatoires','err');return;}
+  const tid=parseInt(document.getElementById('g-camion').value);
+  const t=S.trucks.find(x=>x.id===tid);
+  const rec={id:Date.now(),date:document.getElementById('g-date').value,camion:t?t.plaque:'?',camionId:tid,station:document.getElementById('g-station').value,qte:q,pu,total:Math.round(q*pu*100)/100,bon:document.getElementById('g-bon').value};
+  S.gasoil.unshift(rec);
+  if(t){t.gasoil_dhs=(t.gasoil_dhs||0)+rec.total;t.pleins=(t.pleins||0)+1;t.litres=(t.litres||0)+q;}
+  addOp(rec.date,'Gasoil',rec.camion+' — '+fmtD(q)+'L',rec.total);
+  save();renderGasoil();toast('Plein enregistré — '+fmtD(rec.total)+' DHS');
+  document.getElementById('g-qte').value='';document.getElementById('g-bon').value='';calcGasoil();
+}
+function deleteGasoil(id){
+  const i=S.gasoil.findIndex(g=>g.id===id);
+  if(i<0||!confirm('Supprimer ce plein ?'))return;
+  const g=S.gasoil[i];
+  const t=S.trucks.find(x=>x.id===g.camionId);
+  if(t){t.gasoil_dhs=Math.max(0,(t.gasoil_dhs||0)-g.total);t.pleins=Math.max(0,(t.pleins||0)-1);t.litres=Math.max(0,(t.litres||0)-g.qte);}
+  S.gasoil.splice(i,1);save();renderGasoil();toast('Supprimé');
+}
+function renderGasoil(){
+  const q=document.getElementById('g-search').value.toLowerCase();
+  const rows=S.gasoil.filter(g=>!q||(g.camion+g.station).toLowerCase().includes(q));
+  let tl=0,td=0;
+  document.getElementById('tbody-gasoil').innerHTML=rows.map(r=>{
+    tl+=r.qte;td+=r.total;
+    return `<tr><td>${r.date}</td><td><strong>${r.camion}</strong></td><td style="font-size:12px">${r.station}</td><td>${fmtD(r.qte)}</td><td>${fmtD(r.pu)}</td><td style="font-weight:600">${fmtD(r.total)}</td><td style="font-size:12px;color:var(--gray)">${r.bon||'—'}</td><td><button class="btn-danger btn-small" onclick="deleteGasoil(${r.id})">✕</button></td></tr>`;
+  }).join('')||'<tr><td colspan="8" style="text-align:center;color:var(--gray);padding:20px">Aucun plein enregistré</td></tr>';
+  document.getElementById('sum-g-litres').textContent=fmtD(tl);
+  document.getElementById('sum-g-dhs').textContent=fmt(td);
+}
+
+// ---- PAIEMENT ----
+function updateSoldeDisplay(){
+  const cid=parseInt(document.getElementById('p-client').value);
+  const m=parseFloat(document.getElementById('p-montant').value)||0;
+  const c=S.clients.find(x=>x.id===cid);
+  if(c){
+    document.getElementById('p-solde-avant').textContent=fmt(c.solde||0)+' DHS';
+    document.getElementById('p-solde-apres').textContent=fmt(Math.max(0,(c.solde||0)-m))+' DHS';
+  }
+}
+function savePaiement(){
+  const m=parseFloat(document.getElementById('p-montant').value)||0;
+  if(!m){toast('Entrez un montant','err');return;}
+  const cid=parseInt(document.getElementById('p-client').value);
+  const c=S.clients.find(x=>x.id===cid);
+  const rec={id:Date.now(),date:document.getElementById('p-date').value,client:c?c.nom:'?',clientId:cid,mode:document.getElementById('p-mode').value,montant:m,note:document.getElementById('p-note').value};
+  S.paiements.unshift(rec);
+  if(c)c.solde=Math.max(0,(c.solde||0)-m);
+  addOp(rec.date,'Paiement',rec.mode+' — '+rec.client,-m);
+  save();renderPaiements();toast('Paiement enregistré — '+fmt(m)+' DHS');
+  document.getElementById('p-montant').value='';document.getElementById('p-note').value='';updateSoldeDisplay();
+}
+function deletePaiement(id){
+  const i=S.paiements.findIndex(p=>p.id===id);
+  if(i<0||!confirm('Supprimer ce paiement ?'))return;
+  const p=S.paiements[i];
+  const c=S.clients.find(x=>x.id===p.clientId);
+  if(c)c.solde=(c.solde||0)+p.montant;
+  S.paiements.splice(i,1);save();renderPaiements();updateSoldeDisplay();toast('Supprimé');
+}
+function renderPaiements(){
+  let tot=0;
+  document.getElementById('tbody-paiements').innerHTML=S.paiements.map(r=>{
+    tot+=r.montant;
+    return `<tr><td>${r.date}</td><td><strong>${r.client}</strong></td><td><span class="badge badge-green">${r.mode}</span></td><td style="color:var(--green);font-weight:700">− ${fmt(r.montant)}</td><td style="font-size:12px;color:var(--gray)">${r.note||'—'}</td><td><button class="btn-danger btn-small" onclick="deletePaiement(${r.id})">✕</button></td></tr>`;
+  }).join('')||'<tr><td colspan="6" style="text-align:center;color:var(--gray);padding:20px">Aucun paiement enregistré</td></tr>';
+  document.getElementById('sum-p-total').textContent=fmt(tot)+' DHS';
+}
+
+// ---- CLIENTS ----
+function toggleAddClient(){
+  const b=document.getElementById('add-client-box');
+  b.style.display=b.style.display==='block'?'none':'block';
+}
+function addClient(){
+  const nom=document.getElementById('nc-nom').value.trim();
+  if(!nom){toast('Entrez un nom','err');return;}
+  S.clients.push({id:S.nextClientId++,nom,depot:document.getElementById('nc-depot').value,tel:document.getElementById('nc-tel').value,solde:parseFloat(document.getElementById('nc-solde').value)||0});
+  document.getElementById('add-client-box').style.display='none';
+  ['nc-nom','nc-tel'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('nc-solde').value='0';
+  save();renderClients();populateSelects();toast('Client ajouté');
+}
+function deleteClient(id){
+  if(!confirm('Supprimer ce client ?'))return;
+  S.clients=S.clients.filter(c=>c.id!==id);
+  save();renderClients();populateSelects();toast('Client supprimé');
+}
+function editSolde(id){
+  const c=S.clients.find(x=>x.id===id);
+  if(!c)return;
+  const v=prompt('Modifier le solde de '+c.nom+' (actuel: '+fmt(c.solde||0)+' DHS) :',c.solde||0);
+  if(v===null)return;
+  const n=parseFloat(v);
+  if(isNaN(n)){toast('Montant invalide','err');return;}
+  c.solde=n;save();renderClients();toast('Solde mis à jour');
+}
+function renderClients(){
+  const q=document.getElementById('cl-search').value.toLowerCase();
+  const rows=S.clients.filter(c=>!q||(c.nom+c.depot).toLowerCase().includes(q)).sort((a,b)=>(b.solde||0)-(a.solde||0));
+  let tot=0;
+  document.getElementById('tbody-clients').innerHTML=rows.map(c=>{
+    const s=c.solde||0;tot+=s;
+    const b=s>=100000?'<span class="badge badge-red">Urgent</span>':s>=30000?'<span class="badge badge-amber">Attention</span>':s>0?'<span class="badge badge-blue">En cours</span>':'<span class="badge badge-green">OK</span>';
+    return `<tr><td><strong>${c.nom}</strong></td><td>${c.depot}</td><td>${c.tel||'—'}</td><td style="font-weight:700">${fmt(s)}</td><td>${b}</td><td style="display:flex;gap:6px"><button class="btn-secondary btn-small" onclick="editSolde(${c.id})">&#9998;</button><button class="btn-danger btn-small" onclick="deleteClient(${c.id})">✕</button></td></tr>`;
+  }).join('');
+  document.getElementById('sum-cl-solde').textContent=fmt(tot)+' DHS';
+}
+
+// ---- TRUCKS ----
+function toggleAddTruck(){
+  const b=document.getElementById('add-truck-box');
+  b.style.display=b.style.display==='block'?'none':'block';
+}
+function addTruck(){
+  const plaque=document.getElementById('nt-plaque').value.trim().toUpperCase();
+  if(!plaque){toast('Entrez une immatriculation','err');return;}
+  S.trucks.push({id:S.nextTruckId++,plaque,chauffeur:document.getElementById('nt-chauffeur').value,depot:document.getElementById('nt-depot').value,gasoil_dhs:0,pleins:0,litres:0});
+  document.getElementById('add-truck-box').style.display='none';
+  ['nt-plaque','nt-chauffeur'].forEach(id=>document.getElementById(id).value='');
+  save();renderTrucks();populateSelects();toast('Camion ajouté');
+}
+function deleteTruck(id){
+  if(!confirm('Supprimer ce camion ?'))return;
+  S.trucks=S.trucks.filter(t=>t.id!==id);
+  save();renderTrucks();populateSelects();
+}
+function renderTrucks(){
+  const q=document.getElementById('tr-search').value.toLowerCase();
+  const rows=S.trucks.filter(t=>!q||(t.plaque+(t.chauffeur||'')).toLowerCase().includes(q)).sort((a,b)=>(b.gasoil_dhs||0)-(a.gasoil_dhs||0));
+  document.getElementById('tbody-trucks').innerHTML=rows.map(t=>`<tr><td><strong>${t.plaque}</strong></td><td>${t.chauffeur||'—'}</td><td>${t.depot}</td><td style="font-weight:600">${fmt(t.gasoil_dhs||0)}</td><td>${t.pleins||0}</td><td>${fmt(t.litres||0)}</td><td><button class="btn-danger btn-small" onclick="deleteTruck(${t.id})">✕</button></td></tr>`).join('');
+}
+
+// ---- RAPPORT ----
+function buildReport(){
+  const from=document.getElementById('r-from').value;
+  const to=document.getElementById('r-to').value;
+  const rcl=parseInt(document.getElementById('r-client').value)||0;
+  const vF=S.ventes.filter(v=>(!from||v.date>=from)&&(!to||v.date<=to)&&(!rcl||v.clientId===rcl));
+  const gF=S.gasoil.filter(g=>(!from||g.date>=from)&&(!to||g.date<=to));
+  const pF=S.paiements.filter(p=>(!from||p.date>=from)&&(!to||p.date<=to)&&(!rcl||p.clientId===rcl));
+  const tv=vF.reduce((s,v)=>s+v.vente,0);
+  const ta=vF.reduce((s,v)=>s+v.achat,0);
+  const tm=vF.reduce((s,v)=>s+v.marge,0);
+  const tg=gF.reduce((s,g)=>s+g.total,0);
+  const tp=pF.reduce((s,p)=>s+p.montant,0);
+  const tcr=S.clients.filter(c=>!rcl||c.id===rcl).reduce((s,c)=>s+(c.solde||0),0);
+  const byClient={};
+  vF.forEach(v=>{
+    if(!byClient[v.client])byClient[v.client]={vente:0,achat:0,marge:0};
+    byClient[v.client].vente+=v.vente;byClient[v.client].achat+=v.achat;byClient[v.client].marge+=v.marge;
+  });
+  const periodeText=(from||'début')+' → '+(to||"aujourd'hui");
+  document.getElementById('report-output').innerHTML=`
+    <div id="print-report">
+    <div style="text-align:center;margin-bottom:20px;padding:16px;background:#fff;border-radius:10px;border:1px solid var(--border)">
+      <div style="font-size:20px;font-weight:800;color:var(--blue-dark)">DAR SADIK — Rapport de gestion</div>
+      <div style="font-size:13px;color:var(--gray);margin-top:4px">Période : ${periodeText}</div>
+    </div>
+    <div class="grid-metrics">
+      <div class="metric blue"><div class="lbl">Ventes briques</div><div class="val">${fmt(tv)}</div><div class="sub">DHS</div></div>
+      <div class="metric"><div class="lbl">Achats briques</div><div class="val">${fmt(ta)}</div><div class="sub">DHS</div></div>
+      <div class="metric green"><div class="lbl">Marge brutes</div><div class="val">${fmt(tm)}</div><div class="sub">DHS (${tv>0?Math.round(tm/tv*100):0}%)</div></div>
+      <div class="metric amber"><div class="lbl">Coût gasoil</div><div class="val">${fmt(tg)}</div><div class="sub">DHS</div></div>
+      <div class="metric green"><div class="lbl">Paiements reçus</div><div class="val">${fmt(tp)}</div><div class="sub">DHS</div></div>
+      <div class="metric red"><div class="lbl">Créances restantes</div><div class="val">${fmt(tcr)}</div><div class="sub">DHS dus</div></div>
+      <div class="metric green"><div class="lbl">Marge nette estimée</div><div class="val">${fmt(Math.max(0,tm-tg))}</div><div class="sub">Marge − gasoil</div></div>
+    </div>
+    ${Object.keys(byClient).length>0?`<div class="card"><div class="card-title">Ventes par client</div><div class="tbl-wrap"><table><thead><tr><th>Client</th><th>Ventes DHS</th><th>Achats DHS</th><th>Marge DHS</th><th>% Marge</th></tr></thead><tbody>${Object.entries(byClient).sort((a,b)=>b[1].vente-a[1].vente).map(([nom,d])=>`<tr><td><strong>${nom}</strong></td><td>${fmt(d.vente)}</td><td>${fmt(d.achat)}</td><td style="color:var(--green);font-weight:600">${fmt(d.marge)}</td><td>${d.vente>0?Math.round(d.marge/d.vente*100):0}%</td></tr>`).join('')}</tbody></table></div></div>`:''}
+    ${vF.length>0?`<div class="card"><div class="card-title">Détail des ventes (${vF.length})</div><div class="tbl-wrap"><table><thead><tr><th>Date</th><th>Client</th><th>Camion</th><th>Type</th><th>Qté</th><th>Vente</th><th>Marge</th></tr></thead><tbody>${vF.map(v=>`<tr><td>${v.date}</td><td>${v.client}</td><td>${v.camion}</td><td>${v.type}</td><td>${fmt(v.qte)}</td><td>${fmt(v.vente)}</td><td style="color:var(--green)">${fmt(v.marge)}</td></tr>`).join('')}</tbody></table></div></div>`:''}
+    </div>`;
+}
+function printReport(){
+  const c=document.getElementById('report-output').innerHTML;
+  if(!c){toast('Générez d\'abord le rapport','err');return;}
+  const w=window.open('','_blank');
+  w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Rapport DAR SADIK</title><style>body{font-family:'Segoe UI',sans-serif;padding:20px;color:#111}table{width:100%;border-collapse:collapse;margin-bottom:16px}th,td{border:1px solid #ddd;padding:6px 10px;font-size:12px}th{background:#f0f4f8;font-weight:600}.grid-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}.metric{border:1px solid #ddd;padding:12px;border-radius:6px}.metric .lbl{font-size:10px;color:#666;text-transform:uppercase}.metric .val{font-size:20px;font-weight:700}.card{border:1px solid #ddd;padding:14px;border-radius:6px;margin-bottom:14px}</style></head><body>${c}</body></html>`);
+  w.document.close();w.print();
+}
+
+// =============================================
+// ---- GOOGLE SHEETS INTEGRATION ----
+// =============================================
+
+function getGsUrl(){
+  const u = document.getElementById('gs-url') ? document.getElementById('gs-url').value.trim() : gsUrl;
+  return u || gsUrl;
+}
+
+async function testConnection(){
+  const url = getGsUrl();
+  if(!url){toast('Entrez d\'abord l\'URL Apps Script','err');return;}
+  const st = document.getElementById('gs-status');
+  st.textContent = '⏳ Test en cours...';
+  try {
+    const r = await fetch(url);
+    const t = await r.text();
+    if(t.includes('DAR SADIK') || r.ok){
+      st.innerHTML = '✅ <strong style="color:var(--green)">Connexion réussie !</strong> Votre Google Sheet est connecté.';
+      toast('Connexion réussie !','green');
+    } else {
+      st.innerHTML = '⚠️ Réponse inattendue. Vérifiez l\'URL.';
+    }
+  } catch(e){
+    st.innerHTML = '❌ <span style="color:var(--red)">Erreur de connexion. Vérifiez que l\'URL est correcte et que le déploiement est public.</span>';
+  }
+}
+
+// Data converters for each sheet
+function getSheetData(sheetName){
+  switch(sheetName){
+    case 'ventes':
+      return [
+        ['Date','Client','Camion','Fournisseur','Type','Quantité','Prix Vente/u','Prix Achat/u','Total Vente DHS','Total Achat DHS','Marge DHS','BON','Note'],
+        ...S.ventes.map(v=>[v.date,v.client,v.camion,v.fourn,v.type,v.qte,v.pv,v.pa,v.vente,v.achat,v.marge,v.bon||'',v.note||''])
+      ];
+    case 'gasoil':
+      return [
+        ['Date','Camion','Station','Litres','Prix/Litre','Total DHS','BON'],
+        ...S.gasoil.map(g=>[g.date,g.camion,g.station,g.qte,g.pu,g.total,g.bon||''])
+      ];
+    case 'paiements':
+      return [
+        ['Date','Client','Mode Paiement','Montant DHS','Note/Référence'],
+        ...S.paiements.map(p=>[p.date,p.client,p.mode,p.montant,p.note||''])
+      ];
+    case 'clients':
+      return [
+        ['ID','Nom Client','Dépôt','Téléphone','Solde DHS'],
+        ...S.clients.map(c=>[c.id,c.nom,c.depot,c.tel||'',c.solde||0])
+      ];
+    case 'camions':
+      return [
+        ['ID','Immatriculation','Chauffeur','Dépôt','Total Gasoil DHS','Nbre Pleins','Total Litres'],
+        ...S.trucks.map(t=>[t.id,t.plaque,t.chauffeur||'',t.depot,t.gasoil_dhs||0,t.pleins||0,t.litres||0])
+      ];
+    default: return [];
+  }
+}
+
+async function exportSheet(sheetName){
+  const url = getGsUrl();
+  if(!url){
+    toast('Configurez d\'abord l\'URL Google Sheets (onglet Google Sheets)','err');
+    return;
+  }
+  const rows = getSheetData(sheetName);
+  const sheetMap = {ventes:'Ventes',gasoil:'Gasoil',paiements:'Paiements',clients:'Clients',camions:'Camions'};
+  try {
+    toast('Export en cours...');
+    const r = await fetch(url, {
+      method:'POST',
+      body: JSON.stringify({action:'export', sheet: sheetMap[sheetName], rows})
+    });
+    const d = await r.json();
+    if(d.ok){
+      toast('✅ '+sheetMap[sheetName]+' exporté — '+(d.written||0)+' lignes','green');
+      logGs('✅ Export <strong>'+sheetMap[sheetName]+'</strong> réussi — '+(d.written||0)+' lignes — '+new Date().toLocaleString('fr-MA'),'ok');
+    } else {
+      toast('Erreur export : '+(d.error||'inconnu'),'err');
+      logGs('❌ Export '+sheetMap[sheetName]+' échoué : '+(d.error||'inconnu'),'err');
+    }
+  } catch(e){
+    toast('Erreur réseau. Vérifiez votre connexion.','err');
+    logGs('❌ Erreur réseau lors de l\'export '+sheetMap[sheetName],'err');
+  }
+}
+
+async function exportAll(){
+  const sheets = ['ventes','gasoil','paiements','clients','camions'];
+  const prog = document.getElementById('export-progress');
+  const progText = document.getElementById('export-progress-text');
+  const progFill = document.getElementById('export-progress-fill');
+  prog.style.display='block';
+  for(let i=0;i<sheets.length;i++){
+    progText.textContent = 'Export: '+sheets[i]+' ('+(i+1)+'/5)...';
+    progFill.style.width = ((i+1)/5*100)+'%';
+    await exportSheet(sheets[i]);
+    await new Promise(r=>setTimeout(r,600));
+  }
+  progText.textContent = '✅ Export complet — 5 feuilles envoyées !';
+  progFill.style.width = '100%';
+  setTimeout(()=>{prog.style.display='none';},3000);
+  toast('✅ Toutes les données exportées vers Google Sheets','green');
+}
+
+function parseSheetImport(sheetName, rows){
+  if(!rows || rows.length < 2) return;
+  const data = rows.slice(1);
+  switch(sheetName){
+    case 'Ventes':
+      S.ventes = data.map((r,i)=>({id:Date.now()+i,date:r[0]||'',client:r[1]||'',clientId:0,camion:r[2]||'',camionId:0,fourn:r[3]||'',type:r[4]||'',qte:parseFloat(r[5])||0,pv:parseFloat(r[6])||0,pa:parseFloat(r[7])||0,vente:parseFloat(r[8])||0,achat:parseFloat(r[9])||0,marge:parseFloat(r[10])||0,bon:r[11]||'',note:r[12]||''}));
+      break;
+    case 'Gasoil':
+      S.gasoil = data.map((r,i)=>({id:Date.now()+i,date:r[0]||'',camion:r[1]||'',camionId:0,station:r[2]||'',qte:parseFloat(r[3])||0,pu:parseFloat(r[4])||0,total:parseFloat(r[5])||0,bon:r[6]||''}));
+      break;
+    case 'Paiements':
+      S.paiements = data.map((r,i)=>({id:Date.now()+i,date:r[0]||'',client:r[1]||'',clientId:0,mode:r[2]||'',montant:parseFloat(r[3])||0,note:r[4]||''}));
+      break;
+    case 'Clients':
+      S.clients = data.map(r=>({id:parseInt(r[0])||0,nom:r[1]||'',depot:r[2]||'',tel:r[3]||'',solde:parseFloat(r[4])||0}));
+      S.nextClientId = Math.max(...S.clients.map(c=>c.id),0)+1;
+      break;
+    case 'Camions':
+      S.trucks = data.map(r=>({id:parseInt(r[0])||0,plaque:r[1]||'',chauffeur:r[2]||'',depot:r[3]||'',gasoil_dhs:parseFloat(r[4])||0,pleins:parseInt(r[5])||0,litres:parseFloat(r[6])||0}));
+      S.nextTruckId = Math.max(...S.trucks.map(t=>t.id),0)+1;
+      break;
+  }
+}
+
+async function importSheet(sheetName){
+  const url = getGsUrl();
+  if(!url){toast('Configurez d\'abord l\'URL Google Sheets (onglet Google Sheets)','err');return;}
+  const sheetMap = {ventes:'Ventes',gasoil:'Gasoil',paiements:'Paiements',clients:'Clients',camions:'Camions'};
+  if(!confirm('Importer '+sheetMap[sheetName]+' depuis Google Sheets ?\n\nCela remplacera vos données locales actuelles.')){return;}
+  try {
+    toast('Import en cours...');
+    const r = await fetch(url, {
+      method:'POST',
+      body: JSON.stringify({action:'import', sheet: sheetMap[sheetName]})
+    });
+    const d = await r.json();
+    if(d.ok && d.rows){
+      parseSheetImport(sheetMap[sheetName], d.rows);
+      save();
+      populateSelects();
+      toast('✅ '+sheetMap[sheetName]+' importé — '+(d.rows.length-1)+' lignes','green');
+      logGs('✅ Import <strong>'+sheetMap[sheetName]+'</strong> réussi — '+(d.rows.length-1)+' lignes — '+new Date().toLocaleString('fr-MA'),'ok');
+    } else {
+      toast('Erreur import : '+(d.error||'inconnu'),'err');
+    }
+  } catch(e){
+    toast('Erreur réseau','err');
+  }
+}
+
+async function importAll(){
+  if(!confirm('Importer TOUTES les données depuis Google Sheets ?\n\nCela remplacera TOUTES vos données locales actuelles.\nAssurez-vous d\'avoir fait un export récent avant.'))return;
+  const sheets = ['ventes','gasoil','paiements','clients','camions'];
+  const prog = document.getElementById('import-progress');
+  const progText = document.getElementById('import-progress-text');
+  const progFill = document.getElementById('import-progress-fill');
+  prog.style.display='block';
+  for(let i=0;i<sheets.length;i++){
+    progText.textContent = 'Import: '+sheets[i]+' ('+(i+1)+'/5)...';
+    progFill.style.width = ((i+1)/5*100)+'%';
+    await importSheet_silent(sheets[i]);
+    await new Promise(r=>setTimeout(r,600));
+  }
+  save();populateSelects();renderDashboard();
+  progText.textContent = '✅ Import complet !';
+  progFill.style.width='100%';
+  setTimeout(()=>{prog.style.display='none';},3000);
+  toast('✅ Toutes les données importées depuis Google Sheets','green');
+}
+
+async function importSheet_silent(sheetName){
+  const url = getGsUrl();
+  if(!url)return;
+  const sheetMap = {ventes:'Ventes',gasoil:'Gasoil',paiements:'Paiements',clients:'Clients',camions:'Camions'};
+  try {
+    const r = await fetch(url, {method:'POST',body: JSON.stringify({action:'import', sheet: sheetMap[sheetName]})});
+    const d = await r.json();
+    if(d.ok && d.rows) parseSheetImport(sheetMap[sheetName], d.rows);
+  } catch(e){}
+}
+
+// ---- LOCAL BACKUP ----
+function backupLocal(){
+  const data = JSON.stringify(S, null, 2);
+  const blob = new Blob([data], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'DAR_SADIK_sauvegarde_'+today()+'.json';
+  a.click();
+  URL.revokeObjectURL(url);
+  toast('Sauvegarde téléchargée','green');
+}
+
+function restoreLocal(event){
+  const file = event.target.files[0];
+  if(!file)return;
+  if(!confirm('Restaurer depuis le fichier "'+file.name+'" ?\nCela remplacera toutes vos données actuelles.'))return;
+  const reader = new FileReader();
+  reader.onload = function(e){
+    try {
+      const data = JSON.parse(e.target.result);
+      S = data;
+      save();
+      populateSelects();
+      renderDashboard();
+      toast('✅ Données restaurées depuis '+file.name,'green');
+    } catch(err){
+      toast('Fichier invalide','err');
+    }
+  };
+  reader.readAsText(file);
+}
+
+function copyScript(){
+  const code = document.getElementById('apps-script-code').textContent;
+  navigator.clipboard.writeText(code).then(()=>{
+    toast('Code copié !','green');
+  }).catch(()=>{
+    toast('Sélectionnez et copiez manuellement (Ctrl+A puis Ctrl+C)');
+  });
+}
+
+// ---- START ----
+initDates();populateSelects();renderDashboard();
+</script>
+</body>
+</html>
